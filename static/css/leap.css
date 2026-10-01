@@ -36,6 +36,17 @@
   margin-bottom: 0.6rem;
 }
 
+/* One color for every author, linked or not (index.css paints links blue). */
+.publication-authors,
+.publication-authors a,
+.publication-authors a strong {
+  color: #363636 !important;
+}
+
+.publication-authors a:hover {
+  text-decoration: underline;
+}
+
 .publication-links {
   margin-top: 1.4rem;
 }
