@@ -73,8 +73,8 @@
   "base_frames": 64,
   "base_audio": "montage64x10",
   "ev_clip": [
-   200,
-   214
+   242,
+   256
   ],
   "peeks": [
    [
@@ -85,7 +85,8 @@
     15120,
     15126
    ]
-  ]
+  ],
+  "note": "second whistle at ~4:06-4:14 (tone detector calibrated on the first whistle at 2:30-2:32)"
  },
  {
   "key": "b",
