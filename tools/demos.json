@@ -163,8 +163,8 @@
   "base_frames": 64,
   "base_audio": "montage64x10",
   "ev_clip": [
-   10895,
-   10909
+   10998,
+   11024
   ],
   "peeks": [
    [
@@ -175,7 +175,8 @@
     6080,
     6086
    ]
-  ]
+  ],
+  "note": "ASR: \"where Seurat studied\" at 3:03:22, \"because Seurat took the pose\" at 3:03:40; retained window 10950-11025"
  },
  {
   "key": "c",
@@ -263,7 +264,8 @@
     12080,
     12086
    ]
-  ]
+  ],
+  "note": "ASR: \"Come on, Micah.\" at 7297.2 (benchmark answer spells it Michael)"
  },
  {
   "key": "d",
@@ -339,8 +341,8 @@
   "base_frames": 64,
   "base_audio": "montage64x10",
   "ev_clip": [
-   3140,
-   3152
+   3141,
+   3155
   ],
   "peeks": [
    [
@@ -351,6 +353,7 @@
     10830,
     10836
    ]
-  ]
+  ],
+  "note": "brick lands ~3146, text readable 3147-3149, \"Whoa, a brick\" at 3150"
  }
 ]

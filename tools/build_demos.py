@@ -38,7 +38,7 @@ def dur_label(t):
 
 
 def timeline_svg(d):
-    W, H = 1000.0, 74.0
+    W, H = 1000.0, 90.0
     x0, x1, y_bar, h_bar = 8.0, 992.0, 30.0, 18.0
     dur = d["duration"]
     sx = lambda t: x0 + (x1 - x0) * t / dur
@@ -55,10 +55,16 @@ def timeline_svg(d):
     for b in range(1, d["n_blocks"]):
         x = sx(b * bl)
         parts.append(f'<line x1="{x:.2f}" y1="{y_bar}" x2="{x:.2f}" y2="{y_bar + h_bar}" stroke="{GRID}" stroke-width="1"/>')
-    # retained windows (solid)
+    # retained windows (solid), labelled under the bar at the first retained block
     for s, e in d["windows"]:
         w = max(sx(e) - sx(s), 2.0)
         parts.append(f'<rect x="{sx(s):.2f}" y="{y_bar}" width="{w:.2f}" height="{h_bar}" fill="{RED}"/>')
+    fb = min(d["top_blocks"])
+    fx = sx(fb * bl) + 2
+    fa = "start"
+    if fx > W - 200:
+        fx, fa = sx(min((fb + 1) * bl, dur)) - 2, "end"
+    parts.append(f'<text x="{fx:.2f}" y="{H - 2}" font-size="12" fill="#b4443a" text-anchor="{fa}">windows LEAP retained (red), blocks it kept (tinted)</text>')
     # evidence span (gold, above the bar)
     g0, g1 = d["gt"]
     gw = max(sx(g1) - sx(g0), 3.0)
@@ -82,7 +88,7 @@ def timeline_svg(d):
         lx, la = sx(g0), "start"
     elif lx > W - 120:
         lx, la = sx(g1), "end"
-    parts.append(f'<text x="{lx:.2f}" y="{y_bar - 13}" font-size="12" fill="#92400e" text-anchor="{la}">evidence {hms(g0)}&#8211;{hms(g1)}</text>')
+    parts.append(f'<text x="{lx:.2f}" y="{y_bar - 13}" font-size="12" fill="#92400e" text-anchor="{la}">ground-truth evidence {hms(g0)}&#8211;{hms(g1)} (benchmark annotation)</text>')
     parts.append("</svg>")
     return "".join(parts)
 
@@ -112,11 +118,11 @@ def card(d):
     ev0, ev1 = d["ev_clip"]
     ev_block = next(b for b in d["top_blocks"] if b * d["block_len"] <= ev0 < (b + 1) * d["block_len"])
     tiles = [video_tile(f"static/videos/{k}_ev.mp4", f"static/videos/{k}_ev.jpg",
-                        f"Retained window at {hms(ev0)}", f"block {ev_block + 1} of {d['n_blocks']}, holds the evidence", True)]
+                        f"LEAP retained this window, {hms(ev0)}", f"block {ev_block + 1} of {d['n_blocks']}, covers the ground-truth span", True)]
     for i, (p0, p1) in enumerate(d["peeks"], 1):
         pb = int(p0 // d["block_len"])
         tiles.append(video_tile(f"static/videos/{k}_p{i}.mp4", f"static/videos/{k}_p{i}.jpg",
-                                f"Also retained, {hms(p0)}", f"block {pb + 1} of {d['n_blocks']}", False))
+                                f"LEAP also retained, {hms(p0)}", f"block {pb + 1} of {d['n_blocks']}", False))
     qtype = " / ".join(d["qtype"])
     return f'''
 <div class="demo-card">
