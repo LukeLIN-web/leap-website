@@ -1,0 +1,355 @@
+[
+ {
+  "key": "a",
+  "qid": "ezPQyB6iXg0_1",
+  "video": "ezPQyB6iXg0",
+  "duration": 15300.0,
+  "n_blocks": 26,
+  "block_len": 600.0,
+  "top_blocks": [
+   25,
+   24,
+   0
+  ],
+  "windows": [
+   [
+    75.0,
+    150.0
+   ],
+   [
+    150.0,
+    225.0
+   ],
+   [
+    225.0,
+    300.0
+   ],
+   [
+    14400.0,
+    14475.0
+   ],
+   [
+    14475.0,
+    14550.0
+   ],
+   [
+    14550.0,
+    14625.0
+   ],
+   [
+    15075.0,
+    15150.0
+   ],
+   [
+    15150.0,
+    15225.0
+   ],
+   [
+    15225.0,
+    15300.0
+   ]
+  ],
+  "gt": [
+   0,
+   247
+  ],
+  "question": "At the moment when the video recorder starts whistling for the second time, in which direction relative to him is the coffee shop's entrance located?",
+  "options": [
+   "A. Front",
+   "B. Left",
+   "C. Right",
+   "D. Back"
+  ],
+  "answer": "D",
+  "qtype": [
+   "Spatial Reasoning"
+  ],
+  "audio_type": [
+   "sound"
+  ],
+  "leap_pred": "D",
+  "leap_ctx": 33831,
+  "base_pred": "C",
+  "base_frames": 64,
+  "base_audio": "montage64x10",
+  "ev_clip": [
+   200,
+   214
+  ],
+  "peeks": [
+   [
+    14440,
+    14446
+   ],
+   [
+    15120,
+    15126
+   ]
+  ]
+ },
+ {
+  "key": "b",
+  "qid": "3_fOM3Fy37w_14",
+  "video": "3_fOM3Fy37w",
+  "duration": 14088.0,
+  "n_blocks": 24,
+  "block_len": 600.0,
+  "top_blocks": [
+   0,
+   10,
+   18
+  ],
+  "windows": [
+   [
+    0.0,
+    75.0
+   ],
+   [
+    75.0,
+    150.0
+   ],
+   [
+    150.0,
+    225.0
+   ],
+   [
+    6000.0,
+    6075.0
+   ],
+   [
+    6075.0,
+    6150.0
+   ],
+   [
+    6150.0,
+    6225.0
+   ],
+   [
+    10800.0,
+    10875.0
+   ],
+   [
+    10875.0,
+    10950.0
+   ],
+   [
+    10950.0,
+    11025.0
+   ]
+  ],
+  "gt": [
+   10891,
+   11076
+  ],
+  "question": "When introducing Georges Seurat, what instrument is used in the background music?",
+  "options": [
+   "A. Ukulele",
+   "B. Guitar",
+   "C. Piano",
+   "D. Violin"
+  ],
+  "answer": "A",
+  "qtype": [
+   "Acoustic Attribute Recognition",
+   "Object Recognition"
+  ],
+  "audio_type": [
+   "music"
+  ],
+  "leap_pred": "A",
+  "leap_ctx": 33845,
+  "base_pred": "C",
+  "base_frames": 64,
+  "base_audio": "montage64x10",
+  "ev_clip": [
+   10895,
+   10909
+  ],
+  "peeks": [
+   [
+    60,
+    66
+   ],
+   [
+    6080,
+    6086
+   ]
+  ]
+ },
+ {
+  "key": "c",
+  "qid": "wVglXsmJ_Ro_14",
+  "video": "wVglXsmJ_Ro",
+  "duration": 12255.0,
+  "n_blocks": 21,
+  "block_len": 600.0,
+  "top_blocks": [
+   6,
+   20,
+   12
+  ],
+  "windows": [
+   [
+    3900.0,
+    3975.0
+   ],
+   [
+    3975.0,
+    4050.0
+   ],
+   [
+    4050.0,
+    4125.0
+   ],
+   [
+    7200.0,
+    7275.0
+   ],
+   [
+    7275.0,
+    7350.0
+   ],
+   [
+    7350.0,
+    7425.0
+   ],
+   [
+    12000.0,
+    12075.0
+   ],
+   [
+    12075.0,
+    12150.0
+   ],
+   [
+    12150.0,
+    12225.0
+   ]
+  ],
+  "gt": [
+   7297,
+   7299
+  ],
+  "question": "What is the host's child's name, as mentioned in the video?",
+  "options": [
+   "A. Emre",
+   "B. Mark",
+   "C. Hasan",
+   "D. Michael"
+  ],
+  "answer": "D",
+  "qtype": [
+   "Speech Fact Retrieval"
+  ],
+  "audio_type": [
+   "speech"
+  ],
+  "leap_pred": "D",
+  "leap_ctx": 33852,
+  "base_pred": "A",
+  "base_frames": 64,
+  "base_audio": "montage64x10",
+  "ev_clip": [
+   7292,
+   7306
+  ],
+  "peeks": [
+   [
+    3960,
+    3966
+   ],
+   [
+    12080,
+    12086
+   ]
+  ]
+ },
+ {
+  "key": "d",
+  "qid": "kRrZOjeNPlk_44",
+  "video": "kRrZOjeNPlk",
+  "duration": 10987.2,
+  "n_blocks": 19,
+  "block_len": 600.0,
+  "top_blocks": [
+   0,
+   5,
+   18
+  ],
+  "windows": [
+   [
+    300.0,
+    375.0
+   ],
+   [
+    375.0,
+    450.0
+   ],
+   [
+    450.0,
+    525.0
+   ],
+   [
+    3075.0,
+    3150.0
+   ],
+   [
+    3150.0,
+    3225.0
+   ],
+   [
+    3300.0,
+    3375.0
+   ],
+   [
+    10800.0,
+    10875.0
+   ],
+   [
+    10875.0,
+    10950.0
+   ],
+   [
+    10950.0,
+    10987.2
+   ]
+  ],
+  "gt": [
+   3128,
+   3150
+  ],
+  "question": "During the conversation between the panda and Charlie, a brick is thrown in\u2014what is written on it?",
+  "options": [
+   "A. SHUT UP",
+   "B. QUIET",
+   "C. COME OUTSIDE",
+   "D. PAY MY MONEY"
+  ],
+  "answer": "C",
+  "qtype": [
+   "OCR"
+  ],
+  "audio_type": [
+   "speech"
+  ],
+  "leap_pred": "C",
+  "leap_ctx": 33355,
+  "base_pred": "D",
+  "base_frames": 64,
+  "base_audio": "montage64x10",
+  "ev_clip": [
+   3140,
+   3152
+  ],
+  "peeks": [
+   [
+    330,
+    336
+   ],
+   [
+    10830,
+    10836
+   ]
+  ]
+ }
+]
