@@ -6,8 +6,9 @@ Static site, served by GitHub Pages at <https://lukelin-web.github.io/leap-websi
 
 ```
 index.html              the whole page
-static/css/base.css     layout, derived from phyground.github.io (MIT)
-static/img/*.png        figures rendered from the paper's PDFs (pdftoppm -r 300)
+static/css/             bulma.min.css + index.css + leap.css (template from phyground.github.io / OpenVLA / Nerfies)
+static/js/              fontawesome.all.min.js (button icons)
+static/images/*.png        figures rendered from the paper's PDFs (pdftoppm -r 300)
 static/leap.pdf         the paper
 .github/workflows/      deploys the repo root on every push to main
 .nojekyll               serve the HTML verbatim

@@ -1,0 +1,217 @@
+/* LEAP page styles, derived from phyground.github.io's phyground.css (on top of openvla's index.css). */
+
+/* ---------- Hero ---------- */
+.hero-card {
+  background:
+    radial-gradient(120% 140% at 100% 100%,
+      rgba(24, 119, 242, 0.045) 0%,
+      rgba(247, 235, 221, 0.10) 35%,
+      #F1F4F7 75%);
+  border: 1px solid #DCE6F5;
+  border-radius: 14px;
+  padding: 2.4rem 2.4rem 2rem 2.4rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.02);
+}
+
+@media (max-width: 768px) {
+  .hero-card {
+    padding: 1.6rem 1.2rem 1.4rem 1.2rem;
+    border-radius: 10px;
+  }
+}
+
+.publication-title {
+  font-size: 3.2rem;
+  margin-bottom: 0.4rem;
+}
+
+.publication-subtitle {
+  color: #4a5568;
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  margin-top: 0;
+}
+
+.publication-authors {
+  margin-bottom: 0.6rem;
+}
+
+.publication-links {
+  margin-top: 1.4rem;
+}
+
+.publication-note {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-top: 0.8rem;
+}
+
+/* ---------- Headline numbers ---------- */
+.headline-section {
+  padding-top: 1.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.headline-card {
+  background: #f7f9fc;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem 0.8rem;
+  text-align: center;
+  height: 100%;
+}
+
+.headline-card .headline-num {
+  font-family: 'Google Sans', 'Noto Sans', sans-serif;
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1.1;
+}
+
+.headline-card .headline-label {
+  color: #6b7280;
+  font-size: 0.85rem;
+  margin-top: 0.35rem;
+}
+
+/* ---------- Teaser / figures ---------- */
+.teaser img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+}
+
+.teaser img.narrow { max-width: 760px; }
+
+.teaser-caption {
+  margin-top: 1.2rem;
+  font-size: 0.95rem;
+  color: #4a5568;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+/* ---------- Alternating section backgrounds ---------- */
+.method-section { background: #fafbfc; }
+.streaming-section { background: #f7f9fc; }
+
+.method-section .title.is-4 {
+  margin-top: 1.6rem;
+}
+
+/* ---------- Results tables ---------- */
+.table-title {
+  font-weight: 600;
+  color: #1f2937;
+  margin: 2rem 0 0.6rem;
+}
+
+.leaderboard-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.leaderboard {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.92rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.leaderboard thead th {
+  font-weight: 600;
+  padding: 0.55rem 0.7rem;
+  text-align: center;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.leaderboard thead th.model-col { text-align: left; }
+
+.leaderboard tbody td {
+  padding: 0.55rem 0.7rem;
+  text-align: center;
+  border-bottom: 1px solid #f1f5f9;
+  font-variant-numeric: tabular-nums;
+}
+
+.leaderboard tbody tr:last-child td { border-bottom: none; }
+.leaderboard tbody tr:nth-child(even) td { background: #fbfcfd; }
+.leaderboard tbody tr.sep td { border-top: 2px solid #d1d5db; }
+
+.leaderboard .model-col {
+  text-align: left;
+  white-space: nowrap;
+}
+
+.leaderboard .model-col.indent { padding-left: 1.8rem; }
+
+.leaderboard tbody td.cell-best {
+  background: #fef3c7 !important;
+  color: #854d0e;
+  font-weight: 700;
+}
+
+.leaderboard tbody td.cell-second {
+  background: #f1f5f9 !important;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.leaderboard-legend {
+  margin-top: 0.8rem;
+  color: #6b7280;
+  font-size: 0.85rem;
+  text-align: justify;
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 0.9em;
+  height: 0.9em;
+  vertical-align: -0.05em;
+  border-radius: 3px;
+  margin-right: 0.15em;
+  text-indent: -9999em;
+  overflow: hidden;
+}
+
+.legend-swatch.cell-best   { background: #fef3c7; }
+.legend-swatch.cell-second { background: #f1f5f9; }
+
+/* ---------- BibTeX ---------- */
+.bibtex {
+  background: #f5f5f7;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+  background: #f8fafc;
+  padding: 2rem 1.5rem;
+}
+
+.footer-credit {
+  color: #6b7280;
+  font-size: 0.85rem;
+  margin-top: 0.4rem;
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 768px) {
+  .publication-title { font-size: 2.4rem; }
+  .publication-subtitle { font-size: 1.1rem; }
+  .leaderboard { font-size: 0.82rem; }
+}
