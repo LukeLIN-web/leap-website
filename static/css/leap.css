@@ -37,13 +37,19 @@
 }
 
 /* One color for every author, linked or not (index.css paints links blue). */
-.publication-authors,
-.publication-authors a,
-.publication-authors a strong {
+.hero .hero-card .publication-authors,
+.hero .hero-card .publication-authors .author-block,
+.hero .hero-card .publication-authors .author-block a,
+.hero .hero-card .publication-authors .author-block a:link,
+.hero .hero-card .publication-authors .author-block a:visited,
+.hero .hero-card .publication-authors .author-block strong {
   color: #363636 !important;
+  text-decoration: none;
 }
 
-.publication-authors a:hover {
+.hero .hero-card .publication-authors .author-block a:hover,
+.hero .hero-card .publication-authors .author-block a:hover strong {
+  color: #363636 !important;
   text-decoration: underline;
 }
 
