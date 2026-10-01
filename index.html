@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEAP &mdash; Learned Block-wise Evidence Retrieval for Long Audio-Video Perception</title>
+    <meta name="description" content="LEAP retrieves its own evidence from hour-scale audio-visual recordings: a localization pass scores short candidate windows in every fixed-duration block, and one bounded answer pass re-reads the retained windows, so the context per pass is independent of recording duration.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23000'/%3E%3Ctext x='16' y='23' font-family='Times New Roman,serif' font-size='20' font-weight='bold' text-anchor='middle' fill='%23fff'%3EL%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="static/css/base.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+<nav class="navbar">
+    <div class="navbar-container">
+        <div class="navbar-left">
+            <div class="navbar-brand">
+                <a class="brand-link" href="./">LEAP</a>
+            </div>
+            <ul class="navbar-menu">
+                <li class="nav-item-wrapper"><a class="nav-link" href="#abstract">Abstract</a></li>
+                <li class="nav-item-wrapper"><a class="nav-link" href="#method">Method</a></li>
+                <li class="nav-item-wrapper"><a class="nav-link" href="#results">Results</a></li>
+                <li class="nav-item-wrapper"><a class="nav-link" href="#streaming">Streaming</a></li>
+                <li class="nav-item-wrapper"><a class="nav-link" href="#citation">Citation</a></li>
+            </ul>
+        </div>
+        <div class="navbar-actions">
+            <a class="nav-link" href="static/leap.pdf">Paper</a>
+        </div>
+    </div>
+</nav>
+
+<main id="main" class="main-content">
+    <div class="container">
+
+<section class="hero">
+    <h1>LEAP</h1>
+    <p class="hero-sub"><u>L</u>earned Block-wise <u>E</u>vidence Retrieval for Long <u>A</u>udio-Video <u>P</u>erception</p>
+    <p class="authors">
+        Juyi Lin<sup>1,2</sup>, Zhiqiang Lao<sup>2</sup>, Jiali Cui<sup>2</sup>, Lin Zhao<sup>1</sup>, Pu Zhao<sup>1</sup>, Dichang Zhang<sup>2</sup>,
+        Arman Akbari<sup>1</sup>, Yu Qi<sup>1</sup>, Xinru Jiang<sup>1</sup>, Yanzhi Wang<sup>1</sup>, Heather Yu<sup>2</sup>, Liang Peng<sup>2</sup>
+    </p>
+    <p class="affils"><sup>1</sup>Northeastern University &nbsp;&nbsp; <sup>2</sup>Futurewei Technologies</p>
+    <div class="hero-actions">
+        <a class="btn btn-primary btn-lg" href="static/leap.pdf">Paper (PDF)</a>
+        <span class="btn btn-outline btn-lg disabled" aria-disabled="true" title="arXiv listing not yet posted">arXiv (coming soon)</span>
+        <span class="btn btn-outline btn-lg disabled" aria-disabled="true" title="Code released upon acceptance">Code (coming soon)</span>
+    </div>
+    <p class="corr">Corresponding author: Juyi Lin (<a href="mailto:lin.juy@northeastern.edu">lin.juy@northeastern.edu</a>). Work done during an internship at Futurewei Technologies.</p>
+</section>
+
+<div class="headline-numbers">
+    <div class="headline-number">
+        <span class="num">+4.5&ndash;16.8%</span>
+        <span class="label">over Qwen3-Omni-30B-A3B</span>
+    </div>
+    <div class="headline-number">
+        <span class="num">+3.1&ndash;13.0%</span>
+        <span class="label">over MiniCPM-o 4.5, as published</span>
+    </div>
+    <div class="headline-number">
+        <span class="num">O(1)</span>
+        <span class="label">context per pass, in recording duration</span>
+    </div>
+    <div class="headline-number">
+        <span class="num">Streaming</span>
+        <span class="label">causal queries with no streaming-specific training</span>
+    </div>
+</div>
+
+<section class="section" id="abstract">
+    <h2>Abstract</h2>
+    <p class="abstract">
+        Hour-scale audio-visual question answering is constrained by a context dilemma: dense whole-recording encoding rapidly exhausts context limits, whereas uniform temporal compression severely dilutes fine-grained acoustic and visual evidence. We introduce LEAP, a framework where the model retrieves its own evidence without placing the whole recording in one context. LEAP divides a recording into fixed-duration blocks, applying a lightweight localization pass to each block to score short candidate windows. The highest-ranked windows are pooled and re-encoded in a single bounded answer pass. Consequently, the answer input and peak context remain independent of the recording duration. By decoupling evidence localization from reasoning, our framework can localize candidate temporal windows over pre-computed transcripts without decoding media frames, while preserving fine-grained visual and non-speech evidence by routing the final answering pass over raw audio-visual streams. LEAP trains both stages: a localization LoRA improves the selected windows, and an answer LoRA improves the answers read from the same windows. The block grid natively supports causal queries, enabling LEAP to support streaming inference without streaming-specific training. Across several AVQA benchmarks, LEAP improves over the Qwen3-Omni-30B-A3B baseline by 4.5&ndash;16.8%, and transfers to a second omni-modal backbone, MiniCPM-o 4.5, surpassing its published results by 3.1&ndash;13.0%.
+    </p>
+</section>
+
+<section class="section" id="method">
+    <h2>Method</h2>
+    <figure class="paper-fig narrow">
+        <img src="static/img/arch.png" alt="Overview of LEAP: a recording is split into fixed-length blocks and transcribed once; per question a localization pass scores candidate windows per block from the transcript or the media, and one answer pass re-reads the retained windows from the recording.">
+        <figcaption>
+            <strong>Overview of LEAP.</strong> <em>Top:</em> each recording is split into fixed-length blocks and transcribed once. <em>Bottom:</em> per question, a localization pass scores the candidate windows of every block (faint cells), from either the transcript with the base selector or the media with the localization LoRA; one answer pass re-reads the windows retained by block ranking (solid cells) from the recording.
+        </figcaption>
+    </figure>
+
+    <ul class="contribs">
+        <li><strong>Evidence retrieval without a whole-recording read.</strong> LEAP narrows a full-length recording to a bounded set of evidence-rich windows, at per-pass context and working memory that are constant in the recording's duration.</li>
+        <li><strong>The transcript as a second scanning channel.</strong> Decoupling evidence localization from reasoning lets the same block grid be searched on pre-computed transcripts without decoding media frames; only the windows it selects are re-read as audio and video. The two channels share the block grid and the answer pass and differ only in what is scanned. Routing the answer pass over the raw audio-visual stream preserves the fine-grained visual and non-speech evidence a transcript misses.</li>
+        <li><strong>Historical retrieval as the stream arrives.</strong> The block grid natively supports causal queries, so LEAP supports streaming inference without streaming-specific training. The localization pass selects windows over the media blocks, or over an online transcript index, up to query time, and the answer pass re-reads them from raw media.</li>
+    </ul>
+</section>
+
+<section class="section" id="results">
+    <h2>Results</h2>
+    <figure class="paper-fig">
+        <img src="static/img/bench_radar.png" alt="Two radar charts: LEAP (solid) against the baseline (dashed) across benchmarks, on Qwen3-Omni-30B and on MiniCPM-o 4.5.">
+        <figcaption>
+            <strong>Across benchmarks and backbones.</strong> Solid = LEAP, dashed = baseline: <em>(a)</em> the same backbone on the whole recording (the causal prefix on StreamArena); <em>(b)</em> the backbone as published (official-style on our stack for VideoOdyssey and LVBench, native streaming on StreamArena).
+        </figcaption>
+    </figure>
+
+    <p class="table-title">Main results on Qwen3-Omni-30B. Accuracy (%).</p>
+    <div class="table-wrap">
+    <table class="lb lb-paper">
+        <thead>
+            <tr><th>System</th><th class="num">TraceAV</th><th class="num">LVOmni</th><th class="num">VideoOdyssey (1&ndash;4h)</th><th class="num">MMOU</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>gemini-3-flash-preview<sup>&#9900;</sup></td><td class="num is-best"><strong>62.3</strong></td><td class="num is-best"><strong>59.0</strong></td><td class="num">44.3</td><td class="num">&mdash;</td></tr>
+            <tr><td>Qwen3.5-Omni-Plus<sup>&#9900;</sup></td><td class="num">&mdash;</td><td class="num">&mdash;</td><td class="num">43.0</td><td class="num">&mdash;</td></tr>
+            <tr class="sep"><td>Ming-Flash-Omni-2.0</td><td class="num">51.7</td><td class="num">34.6</td><td class="num">&mdash;</td><td class="num">&mdash;</td></tr>
+            <tr><td>Caption cascade into Qwen3-235B</td><td class="num">&mdash;</td><td class="num">&mdash;</td><td class="num">&mdash;</td><td class="num">47.9</td></tr>
+            <tr><td>Qwen3-Omni-30B, as published<sup>*</sup></td><td class="num">48.4</td><td class="num">35.8</td><td class="num">28.7</td><td class="num">54.1</td></tr>
+            <tr><td>Qwen3-Omni-30B, with ASR transcript<sup>*</sup></td><td class="num">&mdash;</td><td class="num">42.2</td><td class="num">&mdash;</td><td class="num">&mdash;</td></tr>
+            <tr><td>Qwen3-Omni-30B, official recipe</td><td class="num">56.4<sup>&#8225;</sup></td><td class="num">40.7<sup>&#8225;</sup></td><td class="num">36.9<sup>&#8225;</sup></td><td class="num">56.5<sup>&#8225;</sup></td></tr>
+            <tr><td class="indent">Whole clip, uniform, frame-matched</td><td class="num">53.6</td><td class="num">40.4</td><td class="num">&mdash;</td><td class="num">57.8</td></tr>
+            <tr class="sep"><td>LEAP without retrieval</td><td class="num">54.8</td><td class="num">42.9</td><td class="num">41.9</td><td class="num is-second"><u>61.8</u></td></tr>
+            <tr><td>LEAP without answer training</td><td class="num">60.1</td><td class="num">43.0</td><td class="num is-second"><u>46.7</u></td><td class="num">61.4</td></tr>
+            <tr><td><strong>LEAP</strong></td><td class="num is-second"><u>60.9</u></td><td class="num is-second"><u>45.8</u></td><td class="num is-best"><strong>53.7</strong></td><td class="num is-best"><strong>66.3</strong></td></tr>
+        </tbody>
+    </table>
+    </div>
+    <p class="table-note">
+        Upper block: closed-source systems (<sup>&#9900;</sup>) as published. Middle block: open systems as published, then our backbone; <sup>*</sup> = the published number for our backbone; <em>caption cascade</em> = audio and visual captions read by a text-only model; <sup>&#8225;</sup> = the benchmark's official input recipe re-run on our stack, or an official-style whole-clip run where none is runnable. Lower block: <em>LEAP without retrieval</em> = LEAP's answer LoRA reading the whole clip in one pass (on VideoOdyssey, its audio-montage recipe); <em>LEAP without answer training</em> = LEAP's localization LoRA also answering the selected windows; &mdash; = no number. TraceAV = the mean over its twelve general sub-tasks. <strong>Bold</strong> = best, <u>underline</u> = second best in each column.
+    </p>
+
+    <p class="table-title">The smaller backbone against its published rows and two systems of its size class. Accuracy (%).</p>
+    <div class="table-wrap">
+    <table class="lb lb-paper">
+        <thead>
+            <tr><th rowspan="2">System</th><th class="num">TraceAV</th><th class="num">TraceAV</th><th class="num">LVOmni</th><th class="num">MMOU</th></tr>
+            <tr><th class="num">General</th><th class="num">Hallucination</th><th class="num">&nbsp;</th><th class="num">test-15K</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>video-SALMONN-R<sup>3</sup> (8B)<sup>a</sup></td><td class="num">&mdash;</td><td class="num">&mdash;</td><td class="num is-second"><u>42.9</u></td><td class="num">&mdash;</td></tr>
+            <tr><td>OmniAgent-RL-7B<sup>b</sup></td><td class="num">47.6</td><td class="num">42.0</td><td class="num">39.4</td><td class="num">31.6</td></tr>
+            <tr><td>OmniAgent-RL-7B, as published<sup>*</sup></td><td class="num is-second"><u>55.0</u></td><td class="num">46.1</td><td class="num">&mdash;</td><td class="num">&mdash;</td></tr>
+            <tr class="sep"><td>MiniCPM-o 4.5, as published<sup>*</sup></td><td class="num">44.8</td><td class="num is-second"><u>66.5</u></td><td class="num">34.8</td><td class="num is-second"><u>46.8</u></td></tr>
+            <tr><td class="indent"><strong>+ LEAP</strong></td><td class="num is-best"><strong>57.8</strong></td><td class="num is-best"><strong>69.6</strong></td><td class="num is-best"><strong>44.4</strong></td><td class="num is-best"><strong>51.0</strong></td></tr>
+        </tbody>
+    </table>
+    </div>
+    <p class="table-note">
+        <sup>*</sup> = published number. <sup>a</sup> = a re-watching system on Qwen3-VL-8B with a Whisper encoder, as its paper reports it. <sup>b</sup> = a native omni agent on Qwen2.5-Omni-7B, run by us under its own evaluator and step limit. &mdash; = no number. Columns follow each publication's protocol: TraceAV's two tables as subtask macro-averages, LVOmni micro, MMOU's test-15K split under the benchmark's own evaluator. <strong>Bold</strong> = best, <u>underline</u> = second best in each column.
+    </p>
+</section>
+
+<section class="section" id="streaming">
+    <h2>Streaming</h2>
+    <figure class="paper-fig narrow">
+        <img src="static/img/stream.png" alt="LEAP in the streaming scenario: one time axis cut by the query time; the raw archive and a transcript index built beside it; the two selectors and the one answer pass they share.">
+        <figcaption>
+            <strong>LEAP in the streaming scenario.</strong> One time axis, cut by the query time; nothing to its right exists when the question is asked. <em>Top</em>: the raw archive and the transcript index built beside it. <em>Bottom</em>: the two selectors of LEAP and the one answer pass they share, which reads the retained windows from the archive and the outline from the index. Faint cells are candidate windows, solid cells the windows retained inside the blocks each selector keeps, and the outlined cell the slot held for the moment before the query, whether or not the ranking kept its block.
+        </figcaption>
+    </figure>
+
+    <p class="table-title">Historical retrospection under causal access on StreamArena, Qwen3-Omni-30B. Accuracy (%).</p>
+    <div class="table-wrap">
+    <table class="lb lb-paper">
+        <thead>
+            <tr><th rowspan="2">System</th><th rowspan="2" class="num">HR avg</th><th colspan="4" class="lb-paper-group">evidence distance (min)</th></tr>
+            <tr><th class="num">&le;5</th><th class="num">5&ndash;15</th><th class="num">15&ndash;30</th><th class="num">&gt;30</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Whole prefix</td><td class="num">25.4</td><td class="num">22.1</td><td class="num">34.2</td><td class="num">25.5</td><td class="num">12.6</td></tr>
+            <tr><td>Uniform windows</td><td class="num">20.2</td><td class="num">23.2</td><td class="num">25.8</td><td class="num">17.9</td><td class="num">9.3</td></tr>
+            <tr><td><strong>LEAP</strong> &ndash; media</td><td class="num is-best"><strong>32.0</strong></td><td class="num is-best"><strong>26.5</strong></td><td class="num is-best"><strong>41.2</strong></td><td class="num is-second"><u>29.3</u></td><td class="num is-second"><u>23.6</u></td></tr>
+            <tr><td><strong>LEAP</strong> &ndash; transcript</td><td class="num is-second"><u>30.1</u></td><td class="num is-second"><u>24.3</u></td><td class="num is-second"><u>36.1</u></td><td class="num is-best"><strong>30.4</strong></td><td class="num is-best"><strong>24.7</strong></td></tr>
+        </tbody>
+    </table>
+    </div>
+    <p class="table-note">
+        Bins = minutes from the query time back to the evidence. <em>Whole prefix</em> reads everything before the query time in one pass; <em>Uniform windows</em> fills the same context with windows spread equally over it; <em>LEAP &ndash; media</em> and <em>LEAP &ndash; transcript</em> select the windows from the media blocks or from the transcript index built as the stream arrives, and answer them from the raw media. <strong>Bold</strong> = best, <u>underline</u> = second best in each column.
+    </p>
+</section>
+
+<section class="section" id="citation">
+    <h2>Citation</h2>
+<pre>@article{lin2026leap,
+  title   = {{LEAP}: Learned Block-wise Evidence Retrieval for Long Audio-Video Perception},
+  author  = {Lin, Juyi and Lao, Zhiqiang and Cui, Jiali and Zhao, Lin and Zhao, Pu and Zhang, Dichang
+             and Akbari, Arman and Qi, Yu and Jiang, Xinru and Wang, Yanzhi and Yu, Heather and Peng, Liang},
+  journal = {arXiv preprint},
+  year    = {2026}
+}</pre>
+</section>
+
+    </div>
+</main>
+<footer class="footer">
+    <div class="container">
+        <div class="footer-main">
+            <div class="footer-left">
+                <p>LEAP &mdash; Learned Block-wise Evidence Retrieval for Long Audio-Video Perception</p>
+                <p style="font-size:0.85rem;color:var(--gray-dark);">Northeastern University &middot; Futurewei Technologies</p>
+            </div>
+            <div class="footer-right">
+                <div class="footer-section">
+                    <span class="footer-heading">Page</span>
+                    <ul class="footer-links">
+                        <li><a href="#abstract">Abstract</a></li>
+                        <li><a href="#method">Method</a></li>
+                        <li><a href="#results">Results</a></li>
+                        <li><a href="#streaming">Streaming</a></li>
+                        <li><a href="#citation">Citation</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <span class="footer-heading">Resources</span>
+                    <ul class="footer-links">
+                        <li><a href="static/leap.pdf">Paper (PDF)</a></li>
+                        <li><a href="https://github.com/LukeLIN-web/leap-website">Website source</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p class="footer-copyright">&copy; 2026 the LEAP authors. Page layout derived from <a href="https://github.com/phyground/phyground.github.io">phyground.github.io</a> (MIT).</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
