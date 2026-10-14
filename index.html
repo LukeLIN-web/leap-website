@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="./static/css/bulma.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <link rel="stylesheet" href="./static/css/index.css">
-  <link rel="stylesheet" href="./static/css/leap.css?v=3">
+  <link rel="stylesheet" href="./static/css/leap.css?v=4">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23000'/%3E%3Ctext x='16' y='23' font-family='Google Sans,Noto Sans,sans-serif' font-size='20' font-weight='bold' text-anchor='middle' fill='%23fff'%3EL%3C/text%3E%3C/svg%3E">
 
   <script defer src="./static/js/fontawesome.all.min.js"></script>
@@ -66,6 +66,12 @@
                   <span>arXiv</span>
                 </a>
               </span>
+              <span class="link-block">
+                <a href="#video" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-video"></i></span>
+                  <span>Video</span>
+                </a>
+              </span>
             </div>
             <p class="publication-note">Code will be released upon acceptance.</p>
           </div>
@@ -102,6 +108,17 @@
           <div class="headline-label">causal queries, no streaming-specific training</div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser" id="video">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video class="explainer-video" controls playsinline preload="metadata" poster="static/videos/leap_explainer.jpg"><source src="static/videos/leap_explainer.mp4" type="video/mp4"></video>
+      <h2 class="subtitle has-text-centered teaser-caption">
+        <strong>LEAP in 60 seconds.</strong> Why whole-recording reads run out of context, how the localization and answer passes split the work, and the main results on Qwen3-Omni-30B-A3B.
+      </h2>
     </div>
   </div>
 </section>
