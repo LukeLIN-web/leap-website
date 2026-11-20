@@ -409,13 +409,8 @@
       </details>
 
       <details>
-        <summary>Are the reported gains relative or absolute?</summary>
-        <p>Absolute accuracy points. For example, on TraceAV the official recipe on our stack scores 56.4 and LEAP 60.9 (+4.5); on VideoOdyssey, 36.9 and 53.7 (+16.8).</p>
-      </details>
-
-      <details>
         <summary>What does it cost?</summary>
-        <p>Peak context is constant in the recording's duration: about 9.7k tokens for a block's localization pass and about 30k for the answer pass. Summed over all passes, prefill is 2.2&ndash;2.4&times; a single whole-clip read. The block's media prefix does not depend on the question, so several questions on one video can share it; reusing it brings the median cumulative prefill on VideoOdyssey down to 0.29&times; a whole-clip read. Scanning transcripts instead of media uses 4.7&ndash;6.2&times; fewer localization tokens at accuracy within one point, though it is weaker when the evidence is purely visual.</p>
+        <p>Peak context is constant in the recording's duration: about 9.7k tokens for a block's localization pass and about 30k for the answer pass. The block's media prefix does not depend on the question, so several questions on one video can share it; reusing it brings the median cumulative prefill on VideoOdyssey down to 0.29&times; a whole-clip read. Scanning transcripts instead of media uses 4.7&ndash;6.2&times; fewer localization tokens at accuracy within one point.</p>
       </details>
 
       <details>
@@ -426,11 +421,6 @@
       <details>
         <summary>How does streaming work without streaming training?</summary>
         <p>Blocks are cut by the clock, so a query only ever sees the blocks before its timestamp. The one streaming-specific rule is that the 75 s window ending at the query time is always kept. The transcript index is built online as the audio arrives, with no look-ahead. On StreamArena, LEAP beats both reading the whole causal prefix and evenly spaced windows (see <a href="#streaming">Streaming</a>).</p>
-      </details>
-
-      <details>
-        <summary>When does LEAP fail?</summary>
-        <p>When its assumptions fail. Counting questions need the whole recording, and counting is the one task type where LEAP does not beat the baseline. Questions that need more than nine windows of evidence are truncated by design. Evidence that is a fine visual detail invisible at the coarse scan's 0.5 fps can be missed in the first stage.</p>
       </details>
 
       <details>
