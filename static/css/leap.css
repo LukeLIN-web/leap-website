@@ -368,3 +368,39 @@
   .publication-subtitle { font-size: 1.1rem; }
   .leaderboard { font-size: 0.82rem; }
 }
+
+/* FAQ: one collapsible card per question. */
+.faq-section { background: #fafbfc; }
+.faq details {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  margin-bottom: 0.75rem;
+}
+.faq summary {
+  cursor: pointer;
+  padding: 0.85rem 1.1rem;
+  font-weight: 600;
+  color: #1f2937;
+  list-style: none;
+  position: relative;
+  padding-right: 2.5rem;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after {
+  content: "+";
+  position: absolute;
+  right: 1.1rem;
+  top: 0.75rem;
+  color: #6b7280;
+  font-weight: 400;
+  font-size: 1.2rem;
+}
+.faq details[open] summary::after { content: "\2212"; }
+.faq details p {
+  padding: 0 1.1rem 1rem;
+  margin: 0;
+  color: #374151;
+  line-height: 1.65;
+  text-align: justify;
+}

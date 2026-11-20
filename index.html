@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="./static/css/bulma.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <link rel="stylesheet" href="./static/css/index.css">
-  <link rel="stylesheet" href="./static/css/leap.css?v=4">
+  <link rel="stylesheet" href="./static/css/leap.css?v=5">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23000'/%3E%3Ctext x='16' y='23' font-family='Google Sans,Noto Sans,sans-serif' font-size='20' font-weight='bold' text-anchor='middle' fill='%23fff'%3EL%3C/text%3E%3C/svg%3E">
 
   <script defer src="./static/js/fontawesome.all.min.js"></script>
@@ -70,6 +70,12 @@
                 <a href="#video" class="external-link button is-normal is-rounded is-dark">
                   <span class="icon"><i class="fas fa-video"></i></span>
                   <span>Video</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="#faq" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fas fa-question-circle"></i></span>
+                  <span>FAQ</span>
                 </a>
               </span>
             </div>
@@ -359,6 +365,80 @@
       <span class="cell-best legend-swatch">&#9632;</span>&nbsp;best&nbsp;&nbsp;
       <span class="cell-second legend-swatch">&#9632;</span>&nbsp;second best in each column.
     </p>
+  </div>
+</section>
+
+<section class="section faq-section" id="faq">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">FAQ</h2>
+    <div class="faq">
+
+      <details>
+        <summary>Why not put the whole recording into the model?</summary>
+        <p>Two reasons. It does not fit: a whole-recording read costs about 47k tokens per hour on Qwen3-Omni-30B-A3B, so its 65,536-position limit runs out at about 81 minutes. And even when it fits, the evidence for a question often lasts a few seconds and is diluted by everything else in the context. LEAP keeps the answer pass bounded: at most nine windows plus a transcript outline, whatever the recording's length.</p>
+      </details>
+
+      <details>
+        <summary>How is this different from uniform frame sampling?</summary>
+        <p>Uniform sampling spreads a fixed frame budget over the whole recording, so short evidence can fall between frames and the rest of the context is unrelated content. In the main table, <em>Whole clip, uniform, frame-matched</em> gives the same backbone the same number of frames as LEAP's answer pass, spread evenly; LEAP is ahead on every benchmark where that row exists. Placement is what matters: keeping the number and width of the windows and only spacing the blocks evenly lowers evidence coverage on VideoOdyssey from 70.2% to 47.1%.</p>
+      </details>
+
+      <details>
+        <summary>How is a candidate window scored?</summary>
+        <p>Each 600 s block is shown to the model with its eight 75 s candidate windows listed as lettered options and the question, without the answer options. We read the next-token logit of each window's letter; nothing is decoded. A block's score is its best window's score, the top three blocks are kept, and their top three windows go to the answer pass. Ranking reuses the logits the localization pass already produced, so a question costs one pass per block plus one answer pass, however many blocks are kept.</p>
+      </details>
+
+      <details>
+        <summary>Why rank a block by its best window rather than the average?</summary>
+        <p>Evidence is sparse: in a ten-minute block, the useful part may be a few seconds, and averaging lets the unrelated windows wash it out. The maximum logit equals the pass's mean logit plus the best window's margin over it. Re-ranking the same frozen localization passes without the margin drops evidence coverage on VideoOdyssey from 70.2% to 23.8%, while removing the mean changes it by only a few points.</p>
+      </details>
+
+      <details>
+        <summary>Why not use an off-the-shelf retriever such as SigLIP or a text embedder?</summary>
+        <p>We tested that on the same grid with the same keep rule and answer pass, changing only the ranking key. SigLIP frame&ndash;question similarity and bge-m3 transcript similarity both beat the untrained base model as a selector, but the trained localization LoRA is ahead of SigLIP and of trial-answer confidence overall. The localization score is also question-conditioned by construction, which a precomputed index is not.</p>
+      </details>
+
+      <details>
+        <summary>Why two LoRAs instead of one?</summary>
+        <p>So that retrieval and answering can be measured separately. Both adapters are trained from the same frozen backbone, and at inference they are never stacked: the localization LoRA scans the blocks, then the answer LoRA reads the retained windows. The localization objective only marks which window holds the evidence and contains no answer supervision. The main table shows each part: <em>LEAP without retrieval</em> (answer LoRA on the whole clip) and <em>LEAP without answer training</em> (localization LoRA answering the selected windows).</p>
+      </details>
+
+      <details>
+        <summary>Is the gain from retrieval or just from extra fine-tuning?</summary>
+        <p>Both contribute, and they are separated. With the same answer LoRA, reading LEAP's windows beats reading the whole clip on all four main benchmarks (<em>LEAP without retrieval</em> vs <em>LEAP</em>). With the same answering weights, windows from the trained localizer beat windows from the untrained base selector on all five benchmarks tested, four of them significantly, and raise window-level evidence coverage by about 11 points pooled. Keeping the windows' number and width but randomizing their positions lowers accuracy significantly.</p>
+      </details>
+
+      <details>
+        <summary>Are the reported gains relative or absolute?</summary>
+        <p>Absolute accuracy points. For example, on TraceAV the official recipe on our stack scores 56.4 and LEAP 60.9 (+4.5); on VideoOdyssey, 36.9 and 53.7 (+16.8).</p>
+      </details>
+
+      <details>
+        <summary>What does it cost?</summary>
+        <p>Peak context is constant in the recording's duration: about 9.7k tokens for a block's localization pass and about 30k for the answer pass. Summed over all passes, prefill is 2.2&ndash;2.4&times; a single whole-clip read. The block's media prefix does not depend on the question, so several questions on one video can share it; reusing it brings the median cumulative prefill on VideoOdyssey down to 0.29&times; a whole-clip read. Scanning transcripts instead of media uses 4.7&ndash;6.2&times; fewer localization tokens at accuracy within one point, though it is weaker when the evidence is purely visual.</p>
+      </details>
+
+      <details>
+        <summary>Does it work with other backbones?</summary>
+        <p>We ported it to MiniCPM-o 4.5 with the backbone frozen and the same block grid, retraining the two adapters. It surpasses that model's published results by 3.1&ndash;13.0 points, and on StreamArena it beats the model's own native streaming mode. A backbone needs audio-video input and a reliable multiple-choice letter read-out.</p>
+      </details>
+
+      <details>
+        <summary>How does streaming work without streaming training?</summary>
+        <p>Blocks are cut by the clock, so a query only ever sees the blocks before its timestamp. The one streaming-specific rule is that the 75 s window ending at the query time is always kept. The transcript index is built online as the audio arrives, with no look-ahead. On StreamArena, LEAP beats both reading the whole causal prefix and evenly spaced windows (see <a href="#streaming">Streaming</a>).</p>
+      </details>
+
+      <details>
+        <summary>When does LEAP fail?</summary>
+        <p>When its assumptions fail. Counting questions need the whole recording, and counting is the one task type where LEAP does not beat the baseline. Questions that need more than nine windows of evidence are truncated by design. Evidence that is a fine visual detail invisible at the coarse scan's 0.5 fps can be missed in the first stage.</p>
+      </details>
+
+      <details>
+        <summary>Is the code available?</summary>
+        <p>Code will be released upon acceptance.</p>
+      </details>
+
+    </div>
   </div>
 </section>
 
